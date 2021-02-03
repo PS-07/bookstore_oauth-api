@@ -4,12 +4,14 @@ import (
 	"net/http"
 
 	"github.com/PS-07/bookstore_oauth-api/src/domain/accesstoken"
+	"github.com/PS-07/bookstore_oauth-api/src/utils/errors/errors"
 	"github.com/gin-gonic/gin"
 )
 
 // AccessTokenHandler interface
 type AccessTokenHandler interface {
 	GetByID(*gin.Context)
+	Create(*gin.Context)
 }
 
 type accessTokenHandler struct {
@@ -30,4 +32,20 @@ func (handler *accessTokenHandler) GetByID(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, accessToken)
+}
+
+// Create func
+func (handler *accessTokenHandler) Create(c *gin.Context) {
+	var at accesstoken.AccessToken
+	if err := c.ShouldBindJSON(&at); err != nil {
+		restErr := errors.NewBadRequestError("invalid json body")
+		c.JSON(restErr.Status, restErr)
+		return
+	}
+
+	if err := handler.service.Create(at); err != nil {
+		c.JSON(err.Status, err)
+		return
+	}
+	c.JSON(http.StatusCreated, at)
 }

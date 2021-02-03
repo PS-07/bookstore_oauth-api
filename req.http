@@ -1,1 +1,12 @@
-GET http://localhost:8080/oauth/access_token/1
+GET http://localhost:8080/oauth/access_token/abc124
+
+###
+POST http://localhost:8080/oauth/access_token
+Content-Type: application/json
+
+{
+    "access_token": "abc124",
+    "user_id": 2,
+    "client_id": 5,
+    "expires": 200
+}
